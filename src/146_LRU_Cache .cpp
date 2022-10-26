@@ -7,11 +7,12 @@ struct DLinkedNode{
 };
 
 class LRUCache {
-public:
+private:
     int size, cap;
     DLinkedNode *head;
     DLinkedNode *tail;
     unordered_map<int, DLinkedNode*> cache;
+public:
 
     LRUCache(int capacity) {
         cap = capacity;
@@ -36,7 +37,6 @@ public:
             DLinkedNode *node = cache[key];
             moveToHead(node);
             node->val = value;
-
         }
         else{
             //add node
@@ -56,7 +56,7 @@ public:
 
     void addToHead(DLinkedNode *node){
         node->prev = head;
-        node->next= head->next;
+        node->next = head->next;
         head->next->prev = node;
         head->next = node;
     }
