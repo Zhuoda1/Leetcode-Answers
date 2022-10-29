@@ -32,3 +32,37 @@ public:
         return flag;
     }
 };
+
+class Solution {
+public:
+    vector<vector<int>> edge;
+    vector<int> indeg;
+
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        edge.resize(numCourses);
+        indeg.resize(numCourses);
+
+        for(auto pq : prerequisites){
+            edge[pq[1]].push_back(pq[0]);
+            indeg[pq[0]]++;
+        }
+
+        queue<int> q;
+        for(int i = 0; i < numCourses; i++){
+            if(indeg[i] == 0) q.push(i);
+        }
+
+        int take = 0;
+        while(!q.empty()){
+            int course = q.front();
+            q.pop();
+            take++;
+            for(int after : edge[course]){
+                if(--indeg[after] == 0){
+                    q.push(after);
+                }
+            }
+        }
+        return take == numCourses;
+    }
+};
