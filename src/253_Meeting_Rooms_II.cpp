@@ -14,3 +14,26 @@ public:
         return res;
     }
 };
+
+//Solution
+struct cmp{
+    bool operator()(const pair<int,int>& left, const pair<int,int>& right) const {
+        return left.second > right.second;
+    }
+};
+class Solution {
+public:
+    int minMeetingRooms(vector<vector<int>>& intervals) {
+        sort(intervals.begin(), intervals.end(), [](const auto& u, const auto& v) {
+            return u[0] < v[0];
+        });
+        priority_queue<pair<int,int>, vector<pair<int,int>>, cmp> pq;
+        for(auto interval : intervals){
+            if(!pq.empty() && pq.top().second <= interval[0]){
+                pq.pop();
+            }
+            pq.push({interval[0],interval[1]});
+        }
+        return pq.size();
+    }
+};
