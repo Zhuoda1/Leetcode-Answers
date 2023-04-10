@@ -1,20 +1,5 @@
 class Solution {
 public:
-    bool isPalindrome(string s) {
-        s = cvt(s);
-        int left, right;
-        if(s.size() % 2 == 0){
-            left = s.size() / 2 - 1;
-            right = s.size() / 2;
-        }
-        else{
-            left = s.size() / 2;
-            right = s.size() / 2;
-        }
-        while(left >= 0 && right < s.size()) if(s[left--] != s[right++]) return false;
-        return true;
-    }
-
     string cvt(string s){
         string ret = "";
         for(char ch : s){
@@ -24,5 +9,14 @@ public:
             else continue;
         }
         return ret;
+    }
+    bool isPalindrome(string s) {
+        s = cvt(s);
+        int len = s.size() - 1;
+        int fin = s.size()/2;
+        for(int i = 0; i < fin; i++){
+            if(s[i] != s[len - i]) return false;
+        }
+        return true;
     }
 };
