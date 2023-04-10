@@ -9,6 +9,7 @@
 1. quick find sum/mul -> prefix/suffix sum/mul
 
 1. quick classify -> union find
+   
 # Tricks
 
 1. Anagram -> counting sort
