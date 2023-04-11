@@ -9,7 +9,13 @@
 1. quick find sum/mul -> prefix/suffix sum/mul
 
 1. quick classify -> union find
+
+1. unknown interval -> two pointers
+
+1. known interval -> sliding window
    
 # Tricks
 
 1. Anagram -> counting sort
+
+1. Tree related: find left, find right, satisfies condition -> do sth to root, else relate to left/right
