@@ -13,6 +13,8 @@
 1. unknown interval -> two pointers
 
 1. known interval -> sliding window
+
+1. Two pointer method1: while(condition): move right, update; move left until satisfies some condition, update; update answer
    
 # Tricks
 
