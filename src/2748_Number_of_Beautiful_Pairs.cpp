@@ -21,7 +21,6 @@ public:
             }    
             for(int j = i+1; j < nums.size(); j++){
                 int end = nums[j] % 10;
-                cout<<start<<" "<<end<<" "<<my_gcd(start, end)<<endl;
                 if(!my_gcd(start, end)) ans += 1;
             }
 
