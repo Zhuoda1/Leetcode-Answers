@@ -1,54 +1,24 @@
 class Solution {
 public:
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        int size1 = nums1.size(), size2 = nums2.size();
-        double ans;
-        int i = 0, j = 0;
-        int cnt = 0;
-        if((size1 + size2) & 1){
-            int target = (size1 + size2 + 1) >> 1;
-            while(i < size1 && j < size2){
-                if(nums1[i] < nums2[j]) ans = nums1[i], i++, cnt++;
-                else ans = nums2[j], j++, cnt++;
-                if(cnt == target) return ans;
-            }
-            while(i < size1){
-                ans = nums1[i];
-                i++;
-                cnt++;
-                if(cnt == target) return ans;
-            }
-            while(j < size2){
-                ans = nums2[j];
-                j++;
-                cnt++;
-                if(cnt == target) return ans;
-            }
+        int N1 = nums1.size();
+        int N2 = nums2.size();
+        if (N1 < N2) return findMedianSortedArrays(nums2, nums1);
+        
+        int lo = 0, hi = N2;
+        while (lo <= hi) {
+            int mid2 = (lo + hi) / 2;
+            int mid1 = (N1 + N2) / 2 - mid2;
+            
+            double L1 = (mid1 == 0) ? INT_MIN : nums1[mid1-1];
+            double L2 = (mid2 == 0) ? INT_MIN : nums2[mid2-1];
+            double R1 = (mid1 == N1) ? INT_MAX : nums1[mid1];
+            double R2 = (mid2 == N2) ? INT_MAX : nums2[mid2];
+            
+            if (L1 > R2) lo = mid2 + 1;
+            else if (L2 > R1) hi = mid2 - 1;
+            else return (N1 + N2) % 2 ? min(R1,R2) : (max(L1,L2) + min(R1, R2)) / 2;
         }
-        else{
-            int target = (size1 + size2) >> 1;
-            while(i < size1 && j < size2){
-                if(nums1[i] < nums2[j]) ans = nums1[i], i++, cnt++;
-                else ans = nums2[j], j++, cnt++;
-                if(cnt == target) {
-                    if(i < size1 && j < size2 && nums1[i] < nums2[j]) return (ans + nums1[i]) / 2.0;
-                    else if(j >= size2) return (ans + nums1[i]) / 2.0;
-                    else return (ans + nums2[j]) / 2.0; 
-                }
-            }
-            while(i < size1){
-                ans = nums1[i];
-                i++;
-                cnt++;
-                if(cnt == target) return (ans + nums1[i]) / 2.0;
-            }
-            while(j < size2){
-                ans = nums2[j];
-                j++;
-                cnt++;
-                if(cnt == target) return (ans + nums2[j]) / 2.0;
-            }
-        }
-        return ans;
+    return -1;
     }
 };
