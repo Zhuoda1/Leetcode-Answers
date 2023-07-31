@@ -15,8 +15,6 @@
 1. known interval -> sliding window
 
 1. Two pointer method1: while(condition): move right, update; move left until satisfies some condition, update; update answer
-   
-# Tricks
 
 1. Anagram -> counting sort
 
