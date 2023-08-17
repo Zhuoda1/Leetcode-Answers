@@ -1,38 +1,19 @@
 class Solution {
 public:
-    int find(int f, unordered_map<int, int>& parent){
-        if(parent[f] != f){
-            parent[f] = find(parent[f], parent);
-        }
-        return parent[f];
-    }
     int longestConsecutive(vector<int>& nums) {
-        unordered_map<int, int> parent;
-        unordered_map<int, int> size;
-        for(int num : nums){
-            if(parent.count(num) > 0) continue;
-            if(parent.count(num-1) == 0){
-                parent[num] = num;
-                size[num] = 1;
-            }
-            else{
-                parent[num] = num - 1;
-                size[find(num - 1, parent)] += 1;
-            }
-        }
+        if(nums.empty()) return 0;
+        sort(nums.begin(), nums.end());
 
-        for(int num : nums){
-            int f = find(num, parent);
-            if(parent.count(f - 1) > 0){
-                int nf = find(f - 1, parent);
-                parent[f] = nf;
-                size[nf] += size[f]; 
+        int ans = 1, cur = 1, n = nums.size();
+        for(int i = 1; i < n; i++){
+            if(nums[i-1] != nums[i]){
+                if(nums[i-1] == nums[i] - 1) cur += 1;
+                else{
+                    ans = max(ans, cur);
+                    cur = 1;
+                }
             }
         }
-        int ans = 0;
-        for(auto pr : size){
-            ans = max(pr.second, ans);
-        }
-        return ans;
+        return max(ans, cur);
     }
 };
