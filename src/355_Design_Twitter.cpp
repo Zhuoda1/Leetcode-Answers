@@ -1,47 +1,115 @@
-class Twitter {
+int global_Time = 0;
+class Tweet {
 public:
-    stack<pair<int,int>> db;
-    unordered_map<int, unordered_set<int>> follow_map;
-    Twitter() {
-        
-    }
+    int id;
+    int time;
+    Tweet *next;
     
-    void postTweet(int userId, int tweetId) {
-        db.push({userId, tweetId});
-        follow_map[userId].insert(userId);
-    }
-    
-    vector<int> getNewsFeed(int userId) {
-        vector<int> ans;
-        if(follow_map.count(userId) == 0) return ans;
-        stack<pair<int,int>> temp;
-        for(int i = 0; ans.size() < 10 && db.size(); i++){
-            auto cur = db.top();
-            db.pop();
-            if(follow_map[userId].count(cur.first)) ans.push_back(cur.second);
-            temp.push(cur);
-        }
-        while(temp.size()){
-            db.push(temp.top());
-            temp.pop();
-        }
-        return ans;
-    }
-    
-    void follow(int followerId, int followeeId) {
-        follow_map[followerId].insert(followeeId);
-    }
-    
-    void unfollow(int followerId, int followeeId) {
-        follow_map[followerId].erase(followeeId);
+    Tweet(int id) {
+        this->id = id;
+        this->time = global_Time++;
+        next = nullptr;
     }
 };
 
-/**
- * Your Twitter object will be instantiated and called as such:
- * Twitter* obj = new Twitter();
- * obj->postTweet(userId,tweetId);
- * vector<int> param_2 = obj->getNewsFeed(userId);
- * obj->follow(followerId,followeeId);
- * obj->unfollow(followerId,followeeId);
- */
+class User {
+public:
+    int id;
+    Tweet *tweet;
+    unordered_set<int> follows;
+
+    User(int id) {
+        this->id = id;
+        tweet = nullptr;
+    }
+
+    void follow(int followeeId) {
+        if (followeeId == id) return;
+        follows.insert(followeeId);
+    }
+
+    void unfollow(int followeeId) {
+        if (!follows.count(followeeId) || followeeId == id) return;
+        follows.erase(followeeId);
+    }
+
+    void post(int tweetId) {
+        Tweet *newTweet = new Tweet(tweetId);
+        newTweet->next = tweet;
+        tweet = newTweet;
+    }
+};
+
+class Twitter {    
+private:
+    unordered_map<int, User*> user_map;
+    
+    bool contain(int id) {
+        return user_map.find(id) != user_map.end();
+    }
+    
+public:
+    Twitter() {
+        user_map.clear();
+    }
+    
+    void postTweet(int userId, int tweetId) {
+        if (!contain(userId)) {
+            user_map[userId] = new User(userId);
+        }
+        user_map[userId]->post(tweetId);
+    }
+    
+    vector<int> getNewsFeed(int userId) {
+        if (!contain(userId)) return {};
+
+        struct cmp {
+            bool operator()(const Tweet *a, const Tweet *b) {
+                return a->time < b->time;
+            }
+        };
+        
+        priority_queue<Tweet*, vector<Tweet*>, cmp> q;
+
+        //自己的推文链表
+        if (user_map[userId]->tweet) {
+            q.push(user_map[userId]->tweet);
+        }
+        
+        for (int followeeId : user_map[userId]->follows) {
+            if (!contain(followeeId)) {
+                continue;
+            }
+            Tweet *head = user_map[followeeId]->tweet;
+            if (head == nullptr) continue;
+            q.push(head);
+        }
+        
+        while (!q.empty()) {
+            Tweet *t = q.top(); 
+            q.pop();
+            rs.push_back(t->id);
+            if (rs.size() == 10) return rs;
+            if (t->next) {
+                q.push(t->next);
+            }
+        }
+        return rs;
+    }
+    
+    
+    void follow(int followerId, int followeeId) {
+        if (!contain(followerId)) {
+            user_map[followerId] = new User(followerId);
+        }
+        
+        user_map[followerId]->follow(followeeId);
+    }
+    
+    
+    void unfollow(int followerId, int followeeId) {
+        if (!contain(followerId)) return;
+        
+        user_map[followerId]->unfollow(followeeId);
+    }
+};
