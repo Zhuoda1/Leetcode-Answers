@@ -1,43 +1,31 @@
 class Codec {
 public:
+
     // Encodes a list of strings to a single string.
     string encode(vector<string>& strs) {
-        string ans = "";
-        for(string str : strs){
-            size_t size = str.size();
-            string size_str = "";
-            // 8  abcdefgh -> 8aabcdefgh
-            while(size){
-                size_str.push_back((size % 10) + '0');
-                size /= 10;
-            }
-            // 321
-            ans += size_str;
-            ans.push_back('a');
-            ans += str;
+        string enc = "";
+        for(const auto& str : strs){
+            int sz = str.size();
+            enc += to_string(sz);
+            enc += ";";
+            enc += str;
         }
-        return ans;
+        return enc;
     }
 
     // Decodes a single string to a list of strings.
     vector<string> decode(string s) {
-        vector<string> ans;
-        while(s != ""){
-            size_t size = 0;
-            size_t dig = 1;
-            size_t j = 0;
-            char c = s[j++];
-            while(c != 'a'){
-                size = size + (c - '0') * dig;
-                c = s[j++];
-                dig *= 10;
-            }
-            s.erase(0,j);
-            string cur = s.substr(0, size);
-            ans.push_back(cur);
-            s.erase(0, size);
+        vector<string> dec;
+        int idx = 0, n = s.size();
+        while(idx < n){
+            string sz_str = "";
+            while(s[idx] != ';') sz_str.push_back(s[idx++]);
+            int sz = stoi(sz_str);
+            idx += 1;
+            dec.push_back(s.substr(idx, sz));
+            idx += sz;
         }
-        return ans;
+        return dec;
     }
 };
 
